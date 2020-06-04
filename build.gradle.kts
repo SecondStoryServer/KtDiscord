@@ -15,6 +15,8 @@ dependencies {
 
     val ktorVersion = "1.3.2"
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+
+    testImplementation("org.slf4j:slf4j-simple:1.7.30")
 }
 
 tasks {
