@@ -10,6 +10,7 @@ object KtDiscord {
     const val NAME = "KtDiscord"
     const val VERSION = "1.0-dev"
     const val GITHUB_URL = "https://github.com/sya-ri/KtDiscord"
+    const val API_VERSION = 6
 
     val LOGGER: Logger = LoggerFactory.getLogger(NAME)
 
@@ -17,7 +18,7 @@ object KtDiscord {
         LOGGER.info("$NAME v$VERSION ($GITHUB_URL)")
     }
 
-    internal var token = ""
+    internal lateinit var token: String
         private set
     var status = ConnectStatus.DISCONNECTED
         private set

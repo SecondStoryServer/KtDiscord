@@ -16,6 +16,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.withLock
+import me.syari.discord.KtDiscord.API_VERSION
 import me.syari.discord.KtDiscord.GITHUB_URL
 import me.syari.discord.KtDiscord.LOGGER
 import me.syari.discord.KtDiscord.token
@@ -26,7 +27,7 @@ import me.syari.discord.exception.RateLimitedException
 
 object RestClient {
     private val HTTP_CLIENT = HttpClient(OkHttp)
-    private const val DISCORD_API_URL = "https://discord.com/api/v6"
+    private const val DISCORD_API_URL = "https://discord.com/api/v$API_VERSION"
     private val GSON = Gson()
 
     suspend fun request(endPoint: EndPoint, data: JsonObject? = null, rateLimitRetries: Int = 50): JsonElement {
