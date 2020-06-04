@@ -1,5 +1,8 @@
 package me.syari.discord
 
+import me.syari.discord.rest.EndPoint
+import me.syari.discord.rest.RestClient
+import me.syari.discord.websocket.GatewayClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -14,5 +17,25 @@ object KtDiscord {
         LOGGER.info("$NAME v$VERSION ($GITHUB_URL)")
     }
 
-    var bot_token = ""
+    internal var token = ""
+        private set
+    var status = ConnectStatus.DISCONNECTED
+        private set
+
+    suspend fun login(token: String) {
+        if (status != ConnectStatus.DISCONNECTED) {
+            throw IllegalStateException()
+        }
+        if (token.isBlank()) {
+            throw IllegalArgumentException("")
+        }
+        this.token = token
+
+        status = ConnectStatus.CONNECTING
+
+        val gatewayURL = RestClient.request(EndPoint.GET_GATEWAY_BOT).asJsonObject["url"].asString
+        GatewayClient.connect(gatewayURL)
+
+        status = ConnectStatus.CONNECTED
+    }
 }
