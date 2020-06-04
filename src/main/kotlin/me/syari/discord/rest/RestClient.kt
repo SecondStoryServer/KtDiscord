@@ -29,6 +29,9 @@ object RestClient {
     private const val DISCORD_API_URL = "https://discord.com/api/v6"
     private val GSON = Gson()
 
+    /**
+     * Sends a REST request to the Discord API.
+     */
     suspend fun request(endPoint: EndPoint, data: JsonObject? = null, rateLimitRetries: Int = 50): JsonElement {
         RateLimiter.getMutex(endPoint).withLock {
             repeat(rateLimitRetries) {
