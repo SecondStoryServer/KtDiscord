@@ -60,7 +60,7 @@ object GatewayClient {
 
     private val scope = CoroutineScope(Dispatchers.Default + CoroutineName("GatewayClient"))
 
-    lateinit var gatewayURL: String
+    private lateinit var gatewayURL: String
 
     suspend fun connect(gatewayURL: String) {
         this.gatewayURL = gatewayURL
