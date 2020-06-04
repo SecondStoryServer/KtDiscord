@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import me.syari.discord.ConnectStatus
 import me.syari.discord.KtDiscord
+import me.syari.discord.KtDiscord.API_VERSION
 import me.syari.discord.KtDiscord.LOGGER
 import me.syari.discord.KtDiscord.gatewayIntents
 import me.syari.discord.KtDiscord.maxShards
@@ -26,7 +27,7 @@ object GatewayClient {
 
     fun connect(gatewayURL: String) {
         val client = OkHttpClient.Builder().build()
-        val request = Request.Builder().url(gatewayURL).build()
+        val request = Request.Builder().url("$gatewayURL/?v=$API_VERSION&encoding=json&compress=zlib-stream").build()
         websocket = client.newWebSocket(request, Listener)
     }
 
@@ -87,10 +88,6 @@ object GatewayClient {
                 LOGGER.info("Resuming the session...")
                 resume()
             }
-        }
-
-        override fun onMessage(webSocket: WebSocket, text: String) {
-            LOGGER.debug("onMessage String")
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
