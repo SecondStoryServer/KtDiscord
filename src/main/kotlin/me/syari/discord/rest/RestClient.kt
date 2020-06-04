@@ -18,7 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.withLock
 import me.syari.discord.KtDiscord.GITHUB_URL
 import me.syari.discord.KtDiscord.LOGGER
-import me.syari.discord.KtDiscord.bot_token
+import me.syari.discord.KtDiscord.token
 import me.syari.discord.exception.DiscordException
 import me.syari.discord.exception.MissingPermissionsException
 import me.syari.discord.exception.NotFoundException
@@ -29,9 +29,6 @@ object RestClient {
     private const val DISCORD_API_URL = "https://discord.com/api/v6"
     private val GSON = Gson()
 
-    /**
-     * Sends a REST request to the Discord API.
-     */
     suspend fun request(endPoint: EndPoint, data: JsonObject? = null, rateLimitRetries: Int = 50): JsonElement {
         RateLimiter.getMutex(endPoint).withLock {
             repeat(rateLimitRetries) {
@@ -42,7 +39,7 @@ object RestClient {
                     val response = HTTP_CLIENT.request<HttpResponse> {
                         method = endPoint.method
                         header(HttpHeaders.Accept, "application/json")
-                        header(HttpHeaders.Authorization, "Bot $bot_token")
+                        header(HttpHeaders.Authorization, "Bot $token")
                         header(HttpHeaders.UserAgent, "DiscordBot ($GITHUB_URL)")
                         if (method == HttpMethod.Get) {
                             if (data != null) {
@@ -100,7 +97,8 @@ object RestClient {
                     }
 
                     if (response.status.value in 500..599) {
-                        throw Exception("Discord API returned internal server error (code: ${response.status.value})") // Retry
+                        val message = "Discord API returned internal server error (code: ${response.status.value})"
+                        throw Exception(message) // Retry
                     }
 
                     if (response.status.value == 403) {
@@ -112,10 +110,9 @@ object RestClient {
                     }
 
                     if (response.status.value !in 200..299) {
-                        throw DiscordException(
-                            "Discord API returned status code ${response.status.value} with body ${json?.toString()}",
-                            response.status.value
-                        )
+                        val code = response.status.value
+                        val message = "Discord API returned status code $code with body ${json?.toString()}"
+                        throw DiscordException(message, code)
                     }
 
                     return json ?: JsonObject()
