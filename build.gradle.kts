@@ -13,6 +13,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
+    implementation("com.google.code.gson:gson:2.8.0")
+
     val ktorVersion = "1.3.2"
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
 
