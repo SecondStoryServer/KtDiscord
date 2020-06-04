@@ -198,7 +198,6 @@ object GatewayClient {
         RateLimiter.increment()
     }
 
-    @KtorExperimentalAPI
     object Listener: WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             LOGGER.info("Connected to the gateway")
@@ -215,8 +214,11 @@ object GatewayClient {
 
         private val buffer = mutableListOf<ByteArray>()
         private val inflater = Inflater()
+
+        @KtorExperimentalAPI
         private val ZLIB_SUFFIX = hex("0000ffff")
 
+        @KtorExperimentalAPI
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
             val byteArray = bytes.toByteArray()
 
