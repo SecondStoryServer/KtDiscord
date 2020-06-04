@@ -21,6 +21,7 @@ import me.syari.discord.KtDiscord.gatewayIntents
 import me.syari.discord.KtDiscord.maxShards
 import me.syari.discord.KtDiscord.shard
 import me.syari.discord.KtDiscord.token
+import me.syari.discord.handle.EventHandler.handleEvent
 import me.syari.discord.util.ByteArrayUtil.concat
 import me.syari.discord.util.ByteArrayUtil.takeLastAsByteArray
 import me.syari.discord.util.Timer.timer
@@ -176,14 +177,6 @@ object GatewayClient {
             else -> {
                 LOGGER.warn("Received a packet with unknown opcode: $data")
             }
-        }
-    }
-
-    fun handleEvent(eventType: String, data: JsonObject) {
-        try {
-            // handlers.find { it.eventType == eventType }?.handle(client, data)
-        } catch (ex: Exception) {
-            LOGGER.error("Failed to handle the event! (type: $eventType, json: $data)", ex)
         }
     }
 
