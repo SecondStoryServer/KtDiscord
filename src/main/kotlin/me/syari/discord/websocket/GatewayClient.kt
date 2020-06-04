@@ -2,6 +2,8 @@ package me.syari.discord.websocket
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import io.ktor.util.KtorExperimentalAPI
+import io.ktor.util.hex
 import me.syari.discord.ConnectStatus
 import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.API_VERSION
@@ -18,7 +20,12 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.zip.Inflater
+import java.util.zip.InflaterOutputStream
 
+@KtorExperimentalAPI
 object GatewayClient {
     private lateinit var websocket: WebSocket
 
@@ -65,6 +72,10 @@ object GatewayClient {
 
     }
 
+    private fun handleMessage(websocket: WebSocket, text: String) {
+        LOGGER.debug(text)
+    }
+
     private fun send(opCode: Opcode, data: JsonObject) {
         val json = json {
             "op" to opCode.code
@@ -90,8 +101,57 @@ object GatewayClient {
             }
         }
 
+        private val buffer = mutableListOf<ByteArray>()
+        private val inflater = Inflater()
+        private val ZLIB_SUFFIX = hex("0000ffff")
+
+        private fun ByteArray.takeLastAsByteArray(n: Int): ByteArray {
+            return ByteArray(n).also { result ->
+                for (i in 0 until n) {
+                    result[i] = this[size - n + i]
+                }
+            }
+        }
+
+        private fun Collection<ByteArray>.concat(): ByteArray {
+            val length = sumBy { it.size }
+            return ByteArray(length).also { output ->
+                var pos = 0
+                forEach {
+                    System.arraycopy(it, 0, output, pos, it.size)
+                    pos += it.size
+                }
+            }
+        }
+
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-            LOGGER.debug("onMessage Byte")
+            val byteArray = bytes.toByteArray()
+
+            // Add the received data to buffer
+            buffer.add(byteArray)
+
+            // Check for zlib suffix
+            if (byteArray.size < 4 || !byteArray.takeLastAsByteArray(4).contentEquals(ZLIB_SUFFIX)) {
+                return
+            }
+
+            // Decompress the buffered data
+            val text = ByteArrayOutputStream().use { output ->
+                try {
+                    InflaterOutputStream(output, inflater).use {
+                        it.write(buffer.concat())
+                    }
+                    output.toString("UTF-8")
+                } catch (e: IOException) {
+                    LOGGER.error("Error while decompressing payload", e)
+                    return
+                } finally {
+                    buffer.clear()
+                }
+            }
+
+            // Handle the message
+            handleMessage(websocket, text)
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
