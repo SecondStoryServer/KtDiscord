@@ -58,7 +58,7 @@ enum class Opcode(val code: Int) {
 
     companion object {
         fun getByCode(code: Int): Opcode? {
-            return Opcode.values().find { it.code == code }
+            return values().find { it.code == code }
         }
     }
 }

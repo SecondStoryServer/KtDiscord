@@ -11,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.syari.discord.ConnectStatus
 import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.API_VERSION
@@ -37,7 +39,6 @@ import java.io.IOException
 import java.util.zip.Inflater
 import java.util.zip.InflaterOutputStream
 
-@KtorExperimentalAPI
 object GatewayClient {
     private val GSON = Gson()
 
@@ -67,13 +68,18 @@ object GatewayClient {
         connect()
     }
 
-    private suspend fun connect() {
-        val client = OkHttpClient.Builder().build()
-        val request = Request.Builder().url("$gatewayURL/?v=$API_VERSION&encoding=json&compress=zlib-stream").build()
-        websocket = client.newWebSocket(request, Listener)
+    private val mutex = Mutex()
 
-        while (!ready) {
-            delay(100)
+    private suspend fun connect() {
+        mutex.withLock {
+            val client = OkHttpClient.Builder().build()
+            val request =
+                Request.Builder().url("$gatewayURL/?v=$API_VERSION&encoding=json&compress=zlib-stream").build()
+            websocket = client.newWebSocket(request, Listener)
+
+            while (!ready) {
+                delay(100)
+            }
         }
     }
 
@@ -192,6 +198,7 @@ object GatewayClient {
         RateLimiter.increment()
     }
 
+    @KtorExperimentalAPI
     object Listener: WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             LOGGER.info("Connected to the gateway")
