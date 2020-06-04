@@ -159,7 +159,7 @@ object GatewayClient {
         }
 
         override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: Response?) {
-            LOGGER.debug("onFailure")
+            LOGGER.error("WebSocket Failure ResponseCode: ${response?.code()}", throwable)
         }
     }
 }
