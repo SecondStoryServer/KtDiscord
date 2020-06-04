@@ -1,9 +1,16 @@
 package me.syari.discord.websocket
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.hex
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.syari.discord.ConnectStatus
 import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.API_VERSION
@@ -12,6 +19,11 @@ import me.syari.discord.KtDiscord.gatewayIntents
 import me.syari.discord.KtDiscord.maxShards
 import me.syari.discord.KtDiscord.shard
 import me.syari.discord.KtDiscord.token
+import me.syari.discord.util.ByteArrayUtil.concat
+import me.syari.discord.util.ByteArrayUtil.takeLastAsByteArray
+import me.syari.discord.util.Timer.timer
+import me.syari.discord.util.json.JsonUtil.getObjectOrNull
+import me.syari.discord.util.json.JsonUtil.getOrNull
 import me.syari.discord.util.json.JsonUtil.json
 import me.syari.discord.util.json.JsonUtil.jsonArray
 import okhttp3.OkHttpClient
@@ -27,15 +39,42 @@ import java.util.zip.InflaterOutputStream
 
 @KtorExperimentalAPI
 object GatewayClient {
+    private val GSON = Gson()
+
     private lateinit var websocket: WebSocket
 
     @Volatile
     private var sessionId: String? = null
 
-    fun connect(gatewayURL: String) {
+    @Volatile
+    private var ready: Boolean = false
+
+    @Volatile
+    private var heartbeatTask: Job? = null
+
+    @Volatile
+    private var heartbeatAckReceived: Boolean = false
+
+    @Volatile
+    private var lastSequence: Int? = null
+
+    private val scope = CoroutineScope(Dispatchers.Default + CoroutineName("GatewayClient"))
+
+    lateinit var gatewayURL: String
+
+    suspend fun connect(gatewayURL: String) {
+        this.gatewayURL = gatewayURL
+        connect()
+    }
+
+    private suspend fun connect() {
         val client = OkHttpClient.Builder().build()
         val request = Request.Builder().url("$gatewayURL/?v=$API_VERSION&encoding=json&compress=zlib-stream").build()
         websocket = client.newWebSocket(request, Listener)
+
+        while (!ready) {
+            delay(100)
+        }
     }
 
     private fun authenticate() {
@@ -69,11 +108,77 @@ object GatewayClient {
     }
 
     private fun resume() {
-
+        val sessionId = sessionId ?: throw IllegalArgumentException("sessionId is null")
+        send(Opcode.RESUME, json {
+            "session_id" to sessionId
+            "token" to token
+            "seq" to lastSequence
+        })
     }
 
     private fun handleMessage(websocket: WebSocket, text: String) {
-        LOGGER.debug(text)
+        val payloads = GSON.fromJson(text, JsonObject::class.java)
+        val opcode = Opcode.getByCode(payloads["op"].asInt)
+        val data = payloads.getObjectOrNull("d")
+        LOGGER.trace("Receive: $payloads")
+
+        when (opcode) {
+            Opcode.HELLO -> {
+                LOGGER.debug("Starting heartbeat task")
+
+                val period = data!!["heartbeat_interval"].asLong
+                heartbeatAckReceived = true
+
+                heartbeatTask?.cancel()
+                heartbeatTask = scope.timer(period) {
+                    if (heartbeatAckReceived) {
+                        heartbeatAckReceived = false
+                        send(Opcode.HEARTBEAT, json { lastSequence?.let { "d" to it } })
+                    } else {
+                        websocket.close(4000, "Heartbeat ACK wasn't received")
+                    }
+                }
+            }
+            Opcode.RECONNECT -> {
+                LOGGER.info("Received RECONNECT opcode. Attempting to reconnect.")
+                websocket.close(4001, "Received Reconnect Request")
+            }
+            Opcode.INVALID_SESSION -> {
+                LOGGER.info("Received INVALID_SESSION opcode. Attempting to reconnect.")
+                websocket.close(4990, "Invalid Session")
+            }
+            Opcode.HEARTBEAT_ACK -> {
+                LOGGER.debug("Received heartbeat ACK")
+                heartbeatAckReceived = true
+            }
+            Opcode.DISPATCH -> {
+                val eventType = payloads["t"].asString
+                lastSequence = payloads["s"].asString.toInt()
+
+                if (eventType == "READY" || eventType == "RESUMED") {
+                    ready = true
+
+                    data?.getOrNull("session_id")?.let {
+                        sessionId = it.asString
+                    }
+
+                    LOGGER.info("Ready")
+                }
+
+                handleEvent(eventType, data!!)
+            }
+            else -> {
+                LOGGER.warn("Received a packet with unknown opcode: $data")
+            }
+        }
+    }
+
+    fun handleEvent(eventType: String, data: JsonObject) {
+        try {
+            // handlers.find { it.eventType == eventType }?.handle(client, data)
+        } catch (ex: Exception) {
+            LOGGER.error("Failed to handle the event! (type: $eventType, json: $data)", ex)
+        }
     }
 
     private fun send(opCode: Opcode, data: JsonObject) {
@@ -104,25 +209,6 @@ object GatewayClient {
         private val buffer = mutableListOf<ByteArray>()
         private val inflater = Inflater()
         private val ZLIB_SUFFIX = hex("0000ffff")
-
-        private fun ByteArray.takeLastAsByteArray(n: Int): ByteArray {
-            return ByteArray(n).also { result ->
-                for (i in 0 until n) {
-                    result[i] = this[size - n + i]
-                }
-            }
-        }
-
-        private fun Collection<ByteArray>.concat(): ByteArray {
-            val length = sumBy { it.size }
-            return ByteArray(length).also { output ->
-                var pos = 0
-                forEach {
-                    System.arraycopy(it, 0, output, pos, it.size)
-                    pos += it.size
-                }
-            }
-        }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
             val byteArray = bytes.toByteArray()
@@ -155,7 +241,29 @@ object GatewayClient {
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-            LOGGER.debug("onClosing")
+            LOGGER.info("WebSocket closed with code: $code, reason: '$reason'")
+
+            ready = false
+            heartbeatTask?.cancel()
+
+            if (code == 4014) {
+                LOGGER.error("Invalid privilege intent(s) are specified. you must first go to your application in the Developer Portal and enable the toggle for the Privileged Intents you wish to use.")
+                return
+            }
+
+            // Invalidate cache
+            if (code == 4007 || code == 4990 || code == 4003) {
+                sessionId = null
+                lastSequence = null
+
+                // postponedServerEvents.clear()
+                // client.users.clear()
+                // client.privateChannels.clear()
+            }
+
+            scope.launch {
+                connect()
+            }
         }
 
         override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: Response?) {

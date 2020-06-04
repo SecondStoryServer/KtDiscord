@@ -54,5 +54,11 @@ enum class Opcode(val code: Int) {
     /**
      * sent immediately following a client heartbeat that was received (Receive)
      */
-    HEARTBEAT_ACK(11)
+    HEARTBEAT_ACK(11);
+
+    companion object {
+        fun getByCode(code: Int): Opcode? {
+            return Opcode.values().find { it.code == code }
+        }
+    }
 }
