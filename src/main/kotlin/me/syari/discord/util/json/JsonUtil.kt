@@ -17,4 +17,7 @@ object JsonUtil {
         val member = get(memberName)
         return if (member.isJsonObject) member.asJsonObject else null
     }
+
+    val JsonElement.asStringOrNull
+        get() = if (isJsonPrimitive && asJsonPrimitive.isString) asString else null
 }
