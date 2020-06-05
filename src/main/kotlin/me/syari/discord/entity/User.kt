@@ -1,3 +1,5 @@
 package me.syari.discord.entity
 
-open class User
+import me.syari.discord.entity.`interface`.Updatable
+
+interface User: Updatable

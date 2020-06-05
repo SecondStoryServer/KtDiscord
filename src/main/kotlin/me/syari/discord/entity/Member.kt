@@ -1,3 +1,3 @@
 package me.syari.discord.entity
 
-class Member: User()
+interface Member: User

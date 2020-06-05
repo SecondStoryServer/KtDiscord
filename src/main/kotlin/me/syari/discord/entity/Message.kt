@@ -1,3 +1,3 @@
 package me.syari.discord.entity
 
-class Message
+interface Message
