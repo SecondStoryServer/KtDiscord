@@ -1,4 +1,4 @@
-package me.syari.discord.entity
+package me.syari.discord.entity.api
 
 /**
  * ServerTextChannel

@@ -1,4 +1,4 @@
-package me.syari.discord.entity.`interface`
+package me.syari.discord.entity
 
 import com.google.gson.JsonObject
 
