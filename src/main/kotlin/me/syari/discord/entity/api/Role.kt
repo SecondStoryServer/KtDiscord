@@ -1,7 +1,7 @@
 package me.syari.discord.entity.api
 
-interface Role {
-    val name: String
+import com.google.gson.JsonObject
 
-    val id: Long
+data class Role(val name: String, val id: Long) {
+    constructor(json: JsonObject): this(json["name"].asString, json["id"].asLong)
 }
