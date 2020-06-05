@@ -1,3 +1,5 @@
 package me.syari.discord.entity.impl
 
-class MessageImpl
+import me.syari.discord.entity.api.Message
+
+class MessageImpl: Message

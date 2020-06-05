@@ -1,3 +1,5 @@
 package me.syari.discord.entity.impl
 
-class EmoteImpl
+import me.syari.discord.entity.api.Emote
+
+class EmoteImpl: Emote

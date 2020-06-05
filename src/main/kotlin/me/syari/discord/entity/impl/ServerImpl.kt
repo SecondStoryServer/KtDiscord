@@ -1,3 +1,5 @@
 package me.syari.discord.entity.impl
 
-class ServerImpl
+import me.syari.discord.entity.api.Server
+
+class ServerImpl: Server

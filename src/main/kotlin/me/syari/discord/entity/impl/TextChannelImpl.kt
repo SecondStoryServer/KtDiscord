@@ -1,3 +1,5 @@
 package me.syari.discord.entity.impl
 
-class TextChannelImpl
+import me.syari.discord.entity.api.TextChannel
+
+class TextChannelImpl: TextChannel

@@ -1,3 +1,5 @@
 package me.syari.discord.entity.impl
 
-class RoleImpl
+import me.syari.discord.entity.api.Role
+
+class RoleImpl: Role
