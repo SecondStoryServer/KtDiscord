@@ -7,7 +7,8 @@ import me.syari.discord.util.json.JsonUtil.getOrNull
 
 class UserImpl(json: JsonObject): User, Updatable {
     override lateinit var name: String
-    override var isBot = false
+    override val id = json["id"].asLong
+    override var isBot = json.getOrNull("bot")?.asBoolean ?: false
 
     init {
         update(json)
@@ -15,6 +16,5 @@ class UserImpl(json: JsonObject): User, Updatable {
 
     override fun update(json: JsonObject) {
         name = json["username"].asString
-        json.getOrNull("bot")?.let { isBot = it.asBoolean }
     }
 }

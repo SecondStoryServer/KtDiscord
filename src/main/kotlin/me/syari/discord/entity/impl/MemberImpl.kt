@@ -10,6 +10,7 @@ import me.syari.discord.util.json.JsonUtil.getOrNull
 class MemberImpl(json: JsonObject, user: User): Member, Updatable {
     override val name = user.name
     override var nickName: String? = null
+    override val id = user.id
     override val isBot = user.isBot
 
     init {
@@ -17,6 +18,6 @@ class MemberImpl(json: JsonObject, user: User): Member, Updatable {
     }
 
     override fun update(json: JsonObject) {
-        json.getOrNull("nick")?.let { nickName = it.asStringOrNull }
+        nickName = json.getOrNull("nick")?.asStringOrNull
     }
 }

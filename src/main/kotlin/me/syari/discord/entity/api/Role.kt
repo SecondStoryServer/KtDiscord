@@ -1,3 +1,7 @@
 package me.syari.discord.entity.api
 
-interface Role
+interface Role {
+    val name: String
+
+    val id: Long
+}
