@@ -1,5 +1,3 @@
 package me.syari.discord.entity
 
-class Emote {
-
-}
+class Emote
