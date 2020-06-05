@@ -1,8 +1,6 @@
 package me.syari.discord.entity.api
 
-import me.syari.discord.entity.Updatable
-
-interface User: Updatable {
+interface User {
     val name: String
 
     val isBot: Boolean
