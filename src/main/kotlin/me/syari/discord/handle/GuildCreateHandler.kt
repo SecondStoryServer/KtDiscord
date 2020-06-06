@@ -1,10 +1,17 @@
 package me.syari.discord.handle
 
 import com.google.gson.JsonObject
-import me.syari.discord.KtDiscord
+import me.syari.discord.entity.impl.ServerImpl
+import me.syari.discord.util.json.JsonUtil.getOrNull
 
 object GuildCreateHandler: GatewayHandler {
     override fun handle(data: JsonObject) {
-        KtDiscord.LOGGER.debug("GuildCreateHandler $data")
+        if (data.getOrNull("unavailable")?.asBoolean == true) {
+            return
+        }
+
+        val id = data["id"].asLong
+
+        ServerImpl().update(data)
     }
 }
