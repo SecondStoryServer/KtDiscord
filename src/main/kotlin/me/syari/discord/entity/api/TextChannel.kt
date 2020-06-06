@@ -3,7 +3,7 @@ package me.syari.discord.entity.api
 import com.google.gson.JsonObject
 import me.syari.discord.rest.EndPoint
 import me.syari.discord.rest.RestClient
-import me.syari.discord.util.json.JsonUtil
+import me.syari.discord.util.json.JsonUtil.json
 
 /**
  * ServerTextChannel
@@ -13,7 +13,7 @@ class TextChannel(json: JsonObject) {
     val id = json["id"].asLong
 
     suspend fun send(message: String) {
-        RestClient.request(EndPoint.CreateMessage(id), JsonUtil.json {
+        RestClient.request(EndPoint.CreateMessage(id), json {
             "content" to message
         })
     }
