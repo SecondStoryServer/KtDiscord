@@ -13,4 +13,12 @@ data class TextChannel(val name: String, val id: Long) {
             "content" to message
         })
     }
+
+    companion object {
+        internal val allTextChannels = mutableMapOf<Long, TextChannel>()
+
+        fun get(id: Long): TextChannel? {
+            return allTextChannels[id]
+        }
+    }
 }

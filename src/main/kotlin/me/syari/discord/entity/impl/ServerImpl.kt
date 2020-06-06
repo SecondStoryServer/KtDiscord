@@ -5,6 +5,7 @@ import me.syari.discord.entity.Updatable
 import me.syari.discord.entity.api.Emoji
 import me.syari.discord.entity.api.Server
 import me.syari.discord.entity.api.TextChannel
+import me.syari.discord.entity.api.TextChannel.Companion.allTextChannels
 import me.syari.discord.entity.enums.ChannelType
 import me.syari.discord.util.json.JsonUtil.getOrNull
 
@@ -45,7 +46,9 @@ class ServerImpl: Server, Updatable {
                 ChannelType.GUILD_TEXT -> {
                     val channelId = it["id"].asLong
                     val channelName = it["name"].asString
-                    textChannels[channelId] = TextChannel(channelName, channelId)
+                    val channel = TextChannel(channelName, channelId)
+                    textChannels[channelId] = channel
+                    allTextChannels[channelId] = channel
                 }
             }
         }
