@@ -2,6 +2,7 @@ package me.syari.discord.rest
 
 import io.ktor.http.HttpMethod
 
-enum class EndPoint(val method: HttpMethod, val path: String) {
-    GET_GATEWAY_BOT(HttpMethod.Get, "/gateway/bot")
+sealed class EndPoint(val method: HttpMethod, val path: String) {
+    object GetGatewayBot: EndPoint(HttpMethod.Get, "/gateway/bot")
+    class CreateMessage(channel_id: Long): EndPoint(HttpMethod.Post, "/channels/$channel_id/messages")
 }

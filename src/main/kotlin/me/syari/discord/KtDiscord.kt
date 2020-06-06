@@ -43,7 +43,7 @@ object KtDiscord {
 
         status = ConnectStatus.CONNECTING
 
-        val gatewayURL = RestClient.request(EndPoint.GET_GATEWAY_BOT).asJsonObject["url"].asString
+        val gatewayURL = RestClient.request(EndPoint.GetGatewayBot).asJsonObject["url"].asString
         GatewayClient.connect(gatewayURL)
 
         status = ConnectStatus.CONNECTED

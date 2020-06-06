@@ -6,6 +6,6 @@ import me.syari.discord.rest.RestClient
 
 suspend fun main() {
     KtDiscord.login(BOT_TOKEN)
-    RestClient.request(EndPoint.GET_GATEWAY_BOT)
+    RestClient.request(EndPoint.GetGatewayBot)
     LOGGER.debug("return")
 }
