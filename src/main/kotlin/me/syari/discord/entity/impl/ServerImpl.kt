@@ -1,7 +1,6 @@
 package me.syari.discord.entity.impl
 
 import com.google.gson.JsonObject
-import me.syari.discord.KtDiscord.LOGGER
 import me.syari.discord.entity.Updatable
 import me.syari.discord.entity.api.Emoji
 import me.syari.discord.entity.api.Server
@@ -23,7 +22,6 @@ class ServerImpl: Server, Updatable {
             val isAnimated = it["animated"].asBoolean
             emojis[emojiId] = Emoji(emojiName, emojiId, isAnimated)
         }
-        LOGGER.debug(emojis.toString())
     }
 
     private fun updateRole(json: JsonObject) {
