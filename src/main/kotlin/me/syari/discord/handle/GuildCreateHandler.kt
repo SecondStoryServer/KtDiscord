@@ -12,6 +12,6 @@ object GuildCreateHandler: GatewayHandler {
 
         val id = data["id"].asLong
 
-        ServerImpl().update(data)
+        ServerImpl.putOrUpdate(id, data)
     }
 }

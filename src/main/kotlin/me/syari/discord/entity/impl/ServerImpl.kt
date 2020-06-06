@@ -50,4 +50,19 @@ class ServerImpl: Server, Updatable {
             }
         }
     }
+
+    companion object {
+        private val serverList = mutableMapOf<Long, ServerImpl>()
+
+        internal val allServer
+            get() = serverList.values.toSet()
+
+        internal fun get(id: Long): ServerImpl? {
+            return serverList[id]
+        }
+
+        internal fun putOrUpdate(id: Long, json: JsonObject) {
+            serverList.getOrPut(id) { ServerImpl() }.update(json)
+        }
+    }
 }
