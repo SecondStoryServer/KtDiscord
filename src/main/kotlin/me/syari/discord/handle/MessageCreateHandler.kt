@@ -16,7 +16,8 @@ object MessageCreateHandler: GatewayHandler {
         val member = MemberImpl(memberObject, author)
         val content = data["content"].asString
         val mentionMembers = getMentionMembers(data)
-        LOGGER.debug(mentionMembers.toString())
+        val mentionRoles = getMentionRoles(data)
+        LOGGER.debug(mentionRoles.toString())
     }
 
     private fun getMentionMembers(parent: JsonObject): List<Member> {
@@ -27,5 +28,9 @@ object MessageCreateHandler: GatewayHandler {
             val memberObject = data["member"].asJsonObject
             MemberImpl(memberObject, user)
         } ?: emptyList()
+    }
+
+    private fun getMentionRoles(parent: JsonObject): List<Long> {
+        return parent.getArrayOrNull("mention_roles")?.map { it.asLong } ?: emptyList()
     }
 }
