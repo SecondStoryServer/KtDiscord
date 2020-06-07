@@ -1,6 +1,5 @@
 package me.syari.discord.handle
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import me.syari.discord.KtDiscord.LOGGER
 import me.syari.discord.entity.api.Member
@@ -16,12 +15,12 @@ object MessageCreateHandler: GatewayHandler {
         val memberObject = data["member"].asJsonObject
         val member = MemberImpl(memberObject, author)
         val content = data["content"].asString
-        val mentionObjects = data.getArrayOrNull("mentions")
-        val mentions = getMentions(mentionObjects)
-        LOGGER.debug(mentions.toString())
+        val mentionMembers = getMentionMembers(data)
+        LOGGER.debug(mentionMembers.toString())
     }
 
-    private fun getMentions(array: JsonArray?): List<Member> {
+    private fun getMentionMembers(parent: JsonObject): List<Member> {
+        val array = parent.getArrayOrNull("mentions")
         return array?.map {
             val data = it.asJsonObject
             val user = UserImpl(data)
