@@ -5,7 +5,7 @@ import me.syari.discord.rest.RestClient
 import me.syari.discord.util.json.JsonUtil.json
 
 /**
- * ServerTextChannel
+ * GuildTextChannel
  */
 data class TextChannel(val name: String, val id: Long) {
     suspend fun send(message: String) {

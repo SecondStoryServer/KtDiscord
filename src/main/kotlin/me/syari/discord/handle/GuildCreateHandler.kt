@@ -1,7 +1,7 @@
 package me.syari.discord.handle
 
 import com.google.gson.JsonObject
-import me.syari.discord.entity.impl.ServerImpl
+import me.syari.discord.entity.impl.GuildImpl
 import me.syari.discord.util.json.JsonUtil.getOrNull
 
 object GuildCreateHandler: GatewayHandler {
@@ -12,6 +12,6 @@ object GuildCreateHandler: GatewayHandler {
 
         val id = data["id"].asLong
 
-        ServerImpl.putOrUpdate(id, data)
+        GuildImpl.putOrUpdate(id, data)
     }
 }

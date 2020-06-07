@@ -2,13 +2,13 @@ package me.syari.discord.entity.impl
 
 import com.google.gson.JsonObject
 import me.syari.discord.entity.api.Emoji
-import me.syari.discord.entity.api.Server
+import me.syari.discord.entity.api.Guild
 import me.syari.discord.entity.api.TextChannel
 import me.syari.discord.entity.api.TextChannel.Companion.allTextChannels
 import me.syari.discord.entity.enums.ChannelType
 import me.syari.discord.util.json.JsonUtil.getOrNull
 
-class ServerImpl: Server {
+class GuildImpl: Guild {
     private val emojis = mutableMapOf<Long, Emoji>()
     private val roles = mutableMapOf<Long, String>()
     private val textChannels = mutableMapOf<Long, TextChannel>()
@@ -54,17 +54,17 @@ class ServerImpl: Server {
     }
 
     companion object {
-        private val serverList = mutableMapOf<Long, ServerImpl>()
+        private val serverList = mutableMapOf<Long, GuildImpl>()
 
         internal val allServer
             get() = serverList.values.toSet()
 
-        internal fun get(id: Long): ServerImpl? {
+        internal fun get(id: Long): GuildImpl? {
             return serverList[id]
         }
 
         internal fun putOrUpdate(id: Long, json: JsonObject) {
-            serverList.getOrPut(id) { ServerImpl() }.update(json)
+            serverList.getOrPut(id) { GuildImpl() }.update(json)
         }
     }
 }
