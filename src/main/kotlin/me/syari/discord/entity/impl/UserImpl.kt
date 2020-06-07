@@ -8,4 +8,8 @@ class UserImpl(json: JsonObject): User {
     override val name: String = json["username"].asString
     override val id = json["id"].asLong
     override var isBot = json.getOrNull("bot")?.asBoolean ?: false
+
+    override fun toString(): String {
+        return "User(name: $name, id: $id, isBot: $isBot)"
+    }
 }

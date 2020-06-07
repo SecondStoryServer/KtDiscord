@@ -11,4 +11,8 @@ class MemberImpl(json: JsonObject, user: User): Member {
     override var nickName = json.getOrNull("nick")?.asStringOrNull
     override val id = user.id
     override val isBot = user.isBot
+
+    override fun toString(): String {
+        return "Member(name: $name, nick: $nickName, id: $id, isBot: $isBot)"
+    }
 }
