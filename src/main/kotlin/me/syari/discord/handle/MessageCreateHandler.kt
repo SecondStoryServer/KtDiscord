@@ -1,8 +1,10 @@
 package me.syari.discord.handle
 
 import com.google.gson.JsonObject
+import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.LOGGER
 import me.syari.discord.entity.api.Member
+import me.syari.discord.entity.api.Message
 import me.syari.discord.entity.impl.GuildImpl
 import me.syari.discord.entity.impl.MemberImpl
 import me.syari.discord.entity.impl.UserImpl
@@ -27,7 +29,8 @@ object MessageCreateHandler: GatewayHandler {
         val content = data["content"].asString
         val mentionMembers = getMentionMembers(data)
         val mentionRoles = getMentionRoles(data)
-
+        val message = Message(guild, channel, member, content, mentionMembers, mentionRoles)
+        KtDiscord.messageReceiveEvent.invoke(message)
     }
 
     private fun getMentionMembers(parent: JsonObject): List<Member> {

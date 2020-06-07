@@ -1,5 +1,6 @@
 package me.syari.discord
 
+import me.syari.discord.entity.api.Message
 import me.syari.discord.rest.EndPoint
 import me.syari.discord.rest.RestClient
 import me.syari.discord.websocket.GatewayClient
@@ -29,8 +30,10 @@ object KtDiscord {
         private set
     var gatewayIntents = setOf<GatewayIntent>()
         private set
+    internal lateinit var messageReceiveEvent: (Message) -> Unit
+        private set
 
-    suspend fun login(token: String, shard: Int = 0, maxShards: Int = 1) {
+    suspend fun login(token: String, shard: Int = 0, maxShards: Int = 1, messageReceiveEvent: (Message) -> Unit) {
         if (status != ConnectStatus.DISCONNECTED) {
             throw IllegalStateException()
         }
@@ -47,5 +50,7 @@ object KtDiscord {
         GatewayClient.connect(gatewayURL)
 
         status = ConnectStatus.CONNECTED
+
+        this.messageReceiveEvent = messageReceiveEvent
     }
 }
