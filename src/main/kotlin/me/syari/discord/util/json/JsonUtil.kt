@@ -1,5 +1,6 @@
 package me.syari.discord.util.json
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 
@@ -16,6 +17,12 @@ object JsonUtil {
         if (!has(memberName)) return null
         val member = get(memberName)
         return if (member.isJsonObject) member.asJsonObject else null
+    }
+
+    fun JsonObject.getArrayOrNull(memberName: String): JsonArray? {
+        if (!has(memberName)) return null
+        val member = get(memberName)
+        return if (member.isJsonArray) member.asJsonArray else null
     }
 
     val JsonElement.asStringOrNull
