@@ -1,7 +1,6 @@
 package me.syari.discord.entity.impl
 
 import com.google.gson.JsonObject
-import me.syari.discord.entity.Updatable
 import me.syari.discord.entity.api.Emoji
 import me.syari.discord.entity.api.Server
 import me.syari.discord.entity.api.TextChannel
@@ -9,12 +8,12 @@ import me.syari.discord.entity.api.TextChannel.Companion.allTextChannels
 import me.syari.discord.entity.enums.ChannelType
 import me.syari.discord.util.json.JsonUtil.getOrNull
 
-class ServerImpl: Server, Updatable {
+class ServerImpl: Server {
     private val emojis = mutableMapOf<Long, Emoji>()
     private val roles = mutableMapOf<Long, String>()
     private val textChannels = mutableMapOf<Long, TextChannel>()
 
-    override fun update(json: JsonObject) {
+    private fun update(json: JsonObject) {
         updateEmoji(json)
         updateRole(json)
         updateChannel(json)
