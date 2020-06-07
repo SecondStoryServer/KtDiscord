@@ -53,6 +53,10 @@ class GuildImpl: Guild {
         }
     }
 
+    override fun getTextChannel(id: Long): TextChannel? {
+        return textChannels[id]
+    }
+
     companion object {
         private val serverList = mutableMapOf<Long, GuildImpl>()
 

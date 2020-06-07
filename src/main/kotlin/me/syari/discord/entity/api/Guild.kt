@@ -1,3 +1,5 @@
 package me.syari.discord.entity.api
 
-interface Guild
+interface Guild {
+    fun getTextChannel(id: Long): TextChannel?
+}
