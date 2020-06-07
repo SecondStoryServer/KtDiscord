@@ -14,15 +14,15 @@ object JsonUtil {
     }
 
     fun JsonObject.getObjectOrNull(memberName: String): JsonObject? {
-        if (!has(memberName)) return null
-        val member = get(memberName)
-        return if (member.isJsonObject) member.asJsonObject else null
+        return getOrNull(memberName)?.let {
+            if (it.isJsonObject) it.asJsonObject else null
+        }
     }
 
     fun JsonObject.getArrayOrNull(memberName: String): JsonArray? {
-        if (!has(memberName)) return null
-        val member = get(memberName)
-        return if (member.isJsonArray) member.asJsonArray else null
+        return getOrNull(memberName)?.let {
+            return if (it.isJsonArray) it.asJsonArray else null
+        }
     }
 
     val JsonElement.asStringOrNull
