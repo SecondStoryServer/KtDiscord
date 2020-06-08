@@ -1,7 +1,7 @@
 package me.syari.discord.entity
 
 interface Mentionable {
-    val asMentionRegex: String
+    val asMentionRegex: Regex
 
     val asMentionDisplay: String
 

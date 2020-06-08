@@ -8,7 +8,16 @@ class Message(
     val mentionMembers: List<Member>,
     val mentionRoles: List<Long>
 ) {
+    val contentDisplay: String
+        get() {
+            var display = content
+            mentionMembers.forEach {
+                display = display.replace(it.asMentionRegex, it.asMentionDisplay)
+            }
+            return display
+        }
+
     override fun toString(): String {
-        return "Message(#${channel.name} ${member.displayName}: ${content})"
+        return "Message(#${channel.name} ${member.displayName}: ${contentDisplay})"
     }
 }
