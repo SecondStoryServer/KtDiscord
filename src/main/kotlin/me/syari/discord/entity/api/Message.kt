@@ -3,7 +3,6 @@ package me.syari.discord.entity.api
 import me.syari.discord.entity.Mentionable.Companion.replaceAll
 
 class Message(
-    val guild: Guild,
     val channel: TextChannel,
     val member: Member,
     val content: String,
