@@ -62,6 +62,10 @@ class GuildImpl: Guild {
         return roles[id]
     }
 
+    override fun getEmoji(id: Long): Emoji? {
+        return emojis[id]
+    }
+
     companion object {
         private val serverList = mutableMapOf<Long, GuildImpl>()
 

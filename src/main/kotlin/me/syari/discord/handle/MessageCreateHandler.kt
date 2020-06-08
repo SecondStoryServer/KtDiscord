@@ -3,6 +3,7 @@ package me.syari.discord.handle
 import com.google.gson.JsonObject
 import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.LOGGER
+import me.syari.discord.entity.api.Emoji
 import me.syari.discord.entity.api.Guild
 import me.syari.discord.entity.api.Member
 import me.syari.discord.entity.api.Message
@@ -34,6 +35,8 @@ object MessageCreateHandler: GatewayHandler {
         val mentionMembers = getMentionMembers(data)
         val mentionRoles = getMentionRoles(guild, data)
         val mentionChannels = getMentionChannels(guild, content)
+        val mentionEmojis = getMentionEmojis(guild, content)
+        LOGGER.debug(mentionEmojis.toString())
         val message = Message(channel, member, content, mentionMembers, mentionRoles, mentionChannels)
         KtDiscord.messageReceiveEvent.invoke(message)
     }
@@ -62,6 +65,18 @@ object MessageCreateHandler: GatewayHandler {
                 val channelId = matcher.group(1).toLongOrNull() ?: continue
                 val channel = guild.getTextChannel(channelId) ?: continue
                 add(channel)
+            }
+        }
+    }
+
+    private fun getMentionEmojis(guild: Guild, content: String): List<Emoji> {
+        val pattern = Pattern.compile(Emoji.REGEX)
+        val matcher = pattern.matcher(content)
+        return mutableListOf<Emoji>().apply {
+            while (matcher.find()) {
+                val emojiId = matcher.group(2).toLongOrNull() ?: continue
+                val emoji = guild.getEmoji(emojiId) ?: continue
+                add(emoji)
             }
         }
     }
