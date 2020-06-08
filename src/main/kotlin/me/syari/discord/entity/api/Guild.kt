@@ -65,9 +65,6 @@ class Guild {
     companion object {
         private val serverList = mutableMapOf<Long, Guild>()
 
-        internal val allServer
-            get() = serverList.values.toSet()
-
         internal fun get(id: Long): Guild? {
             return serverList[id]
         }

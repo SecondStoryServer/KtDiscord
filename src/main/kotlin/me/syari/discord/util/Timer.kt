@@ -18,22 +18,17 @@ object Timer {
         interval: Long,
         fixedRate: Boolean = true,
         context: CoroutineContext = EmptyCoroutineContext,
-        action: suspend TimerScope.() -> Unit
+        action: suspend () -> Unit
     ): Job {
         return launch(context) {
-            val scope = TimerScope()
 
             while (isActive) {
                 val time = measureTimeMillis {
                     try {
-                        action(scope)
+                        action()
                     } catch (ex: Exception) {
                         LOGGER.error("Coroutine Timer", ex)
                     }
-                }
-
-                if (scope.isCanceled) {
-                    break
                 }
 
                 if (fixedRate) {
@@ -42,15 +37,6 @@ object Timer {
                     delay(interval)
                 }
             }
-        }
-    }
-
-    class TimerScope {
-        var isCanceled: Boolean = false
-            private set
-
-        fun cancel() {
-            isCanceled = true
         }
     }
 }
