@@ -188,7 +188,6 @@ object GatewayClient {
 
         LOGGER.trace("Sent: $json")
         websocket.send(json)
-        RateLimiter.increment()
     }
 
     object Listener: WebSocketListener() {
