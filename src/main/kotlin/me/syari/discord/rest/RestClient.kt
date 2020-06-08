@@ -26,7 +26,9 @@ import me.syari.discord.exception.NotFoundException
 import me.syari.discord.exception.RateLimitedException
 
 object RestClient {
-    private val HTTP_CLIENT = HttpClient(OkHttp)
+    private val HTTP_CLIENT = HttpClient(OkHttp) {
+        expectSuccess = false
+    }
     private const val DISCORD_API_URL = "https://discord.com/api/v$API_VERSION"
     private val GSON = Gson()
 
