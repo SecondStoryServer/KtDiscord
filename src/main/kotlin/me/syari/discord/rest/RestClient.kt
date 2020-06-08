@@ -78,45 +78,44 @@ object RestClient {
                         LOGGER.debug("RateLimit: $rateLimit, Remaining: $rateLimitRemaining, Ends: $rateLimitEnds")
                     }
 
-                    // Handle rate limits (429 Too Many Requests)
-                    if (response.status.value == 429) {
-                        if (json == null) {
-                            // When get rate limited without body
-                            throw RateLimitedException()
+                    when (response.status.value) {
+                        // Handle rate limits (429 Too Many Requests)
+                        429 -> {
+                            if (json == null) {
+                                // When get rate limited without body
+                                throw RateLimitedException()
+                            }
+
+                            val delay = json.asJsonObject["retry_after"].asLong
+
+                            if (json.asJsonObject["global"].asBoolean) {
+                                RateLimiter.setGlobalRateLimitEnds(delay)
+                            } else {
+                                RateLimiter.setRateLimitEnds(endPoint, System.currentTimeMillis() + delay)
+                                RateLimiter.setRateLimitRemaining(endPoint, 0)
+                            }
+
+                            return@repeat
                         }
-
-                        val delay = json.asJsonObject["retry_after"].asLong
-
-                        if (json.asJsonObject["global"].asBoolean) {
-                            RateLimiter.setGlobalRateLimitEnds(delay)
-                        } else {
-                            RateLimiter.setRateLimitEnds(endPoint, System.currentTimeMillis() + delay)
-                            RateLimiter.setRateLimitRemaining(endPoint, 0)
+                        in 500..599 -> {
+                            val message = "Discord API returned internal server error (code: ${response.status.value})"
+                            throw Exception(message) // Retry
                         }
-
-                        return@repeat
+                        403 -> {
+                            throw MissingPermissionsException("Request: $url, Response: $body")
+                        }
+                        404 -> {
+                            throw NotFoundException(true)
+                        }
+                        !in 200..299 -> {
+                            val code = response.status.value
+                            val message = "Discord API returned status code $code with body ${json?.toString()}"
+                            throw DiscordException(message, code)
+                        }
+                        else -> {
+                            return json ?: JsonObject()
+                        }
                     }
-
-                    if (response.status.value in 500..599) {
-                        val message = "Discord API returned internal server error (code: ${response.status.value})"
-                        throw Exception(message) // Retry
-                    }
-
-                    if (response.status.value == 403) {
-                        throw MissingPermissionsException("Request: $url, Response: $body")
-                    }
-
-                    if (response.status.value == 404) {
-                        throw NotFoundException(true)
-                    }
-
-                    if (response.status.value !in 200..299) {
-                        val code = response.status.value
-                        val message = "Discord API returned status code $code with body ${json?.toString()}"
-                        throw DiscordException(message, code)
-                    }
-
-                    return json ?: JsonObject()
                 } catch (ex: DiscordException) {
                     throw ex
                 } catch (ex: RateLimitedException) {
