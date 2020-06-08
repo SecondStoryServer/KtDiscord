@@ -7,11 +7,13 @@ import me.syari.discord.entity.api.Guild
 import me.syari.discord.entity.api.Member
 import me.syari.discord.entity.api.Message
 import me.syari.discord.entity.api.Role
+import me.syari.discord.entity.api.TextChannel
 import me.syari.discord.entity.impl.GuildImpl
 import me.syari.discord.entity.impl.MemberImpl
 import me.syari.discord.entity.impl.UserImpl
 import me.syari.discord.util.json.JsonUtil.getArrayOrNull
 import me.syari.discord.util.json.JsonUtil.getOrNull
+import java.util.regex.Pattern
 
 object MessageCreateHandler: GatewayHandler {
     override fun handle(data: JsonObject) {
@@ -31,6 +33,8 @@ object MessageCreateHandler: GatewayHandler {
         val content = data["content"].asString
         val mentionMembers = getMentionMembers(data)
         val mentionRoles = getMentionRoles(guild, data)
+        val mentionChannels = getMentionChannels(guild, content)
+        LOGGER.debug(mentionChannels.toString())
         val message = Message(channel, member, content, mentionMembers, mentionRoles)
         KtDiscord.messageReceiveEvent.invoke(message)
     }
@@ -49,5 +53,17 @@ object MessageCreateHandler: GatewayHandler {
         return parent.getArrayOrNull("mention_roles")?.mapNotNull {
             guild.getRole(it.asLong)
         } ?: emptyList()
+    }
+
+    private fun getMentionChannels(guild: Guild, content: String): List<TextChannel> {
+        val pattern = Pattern.compile(TextChannel.REGEX)
+        val matcher = pattern.matcher(content)
+        return mutableListOf<TextChannel>().apply {
+            while (matcher.find()) {
+                val channelId = matcher.group(1).toLongOrNull() ?: continue
+                val channel = guild.getTextChannel(channelId) ?: continue
+                add(channel)
+            }
+        }
     }
 }

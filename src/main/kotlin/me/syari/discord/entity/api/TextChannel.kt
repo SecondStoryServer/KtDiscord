@@ -20,5 +20,7 @@ data class TextChannel(val name: String, val id: Long) {
         fun get(id: Long): TextChannel? {
             return allTextChannels[id]
         }
+
+        internal const val REGEX = "<#(\\d+)>"
     }
 }
