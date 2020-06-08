@@ -19,12 +19,12 @@ enum class Opcode(val code: Int) {
     /**
      * used to update the client status (Send)
      */
-    STATUS_UPDATE(3),
+    // STATUS_UPDATE(3),
 
     /**
      * used to join/move/leave voice channels (Send)
      */
-    VOICE_STATE_UPDATE(4),
+    // VOICE_STATE_UPDATE(4),
 
     /**
      * used to resume a closed connection (Send)
@@ -39,7 +39,7 @@ enum class Opcode(val code: Int) {
     /**
      * used to request guild members (Send)
      */
-    REQUEST_GUILD_MEMBERS(8),
+    // REQUEST_GUILD_MEMBERS(8),
 
     /**
      * used to notify client they have an invalid session id (Receive)
