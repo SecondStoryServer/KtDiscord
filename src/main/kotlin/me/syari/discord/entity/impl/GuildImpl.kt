@@ -3,6 +3,7 @@ package me.syari.discord.entity.impl
 import com.google.gson.JsonObject
 import me.syari.discord.entity.api.Emoji
 import me.syari.discord.entity.api.Guild
+import me.syari.discord.entity.api.Role
 import me.syari.discord.entity.api.TextChannel
 import me.syari.discord.entity.api.TextChannel.Companion.allTextChannels
 import me.syari.discord.entity.enums.ChannelType
@@ -10,7 +11,7 @@ import me.syari.discord.util.json.JsonUtil.getOrNull
 
 class GuildImpl: Guild {
     private val emojis = mutableMapOf<Long, Emoji>()
-    private val roles = mutableMapOf<Long, String>()
+    private val roles = mutableMapOf<Long, Role>()
     private val textChannels = mutableMapOf<Long, TextChannel>()
 
     private fun update(json: JsonObject) {
@@ -34,7 +35,7 @@ class GuildImpl: Guild {
         roleObjects.forEach {
             val roleName = it["name"].asString
             val roleId = it["id"].asLong
-            roles[roleId] = roleName
+            roles[roleId] = Role(roleName, roleId)
         }
     }
 
