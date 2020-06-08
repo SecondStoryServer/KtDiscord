@@ -3,8 +3,10 @@ package me.syari.discord.handle
 import com.google.gson.JsonObject
 import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.LOGGER
+import me.syari.discord.entity.api.Guild
 import me.syari.discord.entity.api.Member
 import me.syari.discord.entity.api.Message
+import me.syari.discord.entity.api.Role
 import me.syari.discord.entity.impl.GuildImpl
 import me.syari.discord.entity.impl.MemberImpl
 import me.syari.discord.entity.impl.UserImpl
@@ -28,7 +30,7 @@ object MessageCreateHandler: GatewayHandler {
         val member = MemberImpl(memberObject, author)
         val content = data["content"].asString
         val mentionMembers = getMentionMembers(data)
-        val mentionRoles = getMentionRoles(data)
+        val mentionRoles = getMentionRoles(guild, data)
         val message = Message(guild, channel, member, content, mentionMembers, mentionRoles)
         KtDiscord.messageReceiveEvent.invoke(message)
     }
@@ -43,7 +45,9 @@ object MessageCreateHandler: GatewayHandler {
         } ?: emptyList()
     }
 
-    private fun getMentionRoles(parent: JsonObject): List<Long> {
-        return parent.getArrayOrNull("mention_roles")?.map { it.asLong } ?: emptyList()
+    private fun getMentionRoles(guild: Guild, parent: JsonObject): List<Role> {
+        return parent.getArrayOrNull("mention_roles")?.mapNotNull {
+            guild.getRole(it.asLong)
+        } ?: emptyList()
     }
 }

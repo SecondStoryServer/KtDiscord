@@ -58,6 +58,10 @@ class GuildImpl: Guild {
         return textChannels[id]
     }
 
+    override fun getRole(id: Long): Role? {
+        return roles[id]
+    }
+
     companion object {
         private val serverList = mutableMapOf<Long, GuildImpl>()
 

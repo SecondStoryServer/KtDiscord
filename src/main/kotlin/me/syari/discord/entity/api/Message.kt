@@ -6,12 +6,12 @@ class Message(
     val member: Member,
     val content: String,
     val mentionMembers: List<Member>,
-    val mentionRoles: List<Long>
+    val mentionRoles: List<Role>
 ) {
     val contentDisplay: String
         get() {
             var display = content
-            mentionMembers.forEach {
+            (mentionMembers + mentionRoles).forEach {
                 display = display.replace(it.asMentionRegex, it.asMentionDisplay)
             }
             return display
