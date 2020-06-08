@@ -9,7 +9,6 @@ import me.syari.discord.entity.api.Member
 import me.syari.discord.entity.api.Message
 import me.syari.discord.entity.api.Role
 import me.syari.discord.entity.api.TextChannel
-import me.syari.discord.entity.impl.GuildImpl
 import me.syari.discord.entity.impl.MemberImpl
 import me.syari.discord.entity.impl.UserImpl
 import me.syari.discord.util.json.JsonUtil.getArrayOrNull
@@ -24,7 +23,7 @@ object MessageCreateHandler: GatewayHandler {
 
     private fun handleGuild(data: JsonObject) {
         val guildId = data.getOrNull("guild_id")?.asLong ?: return
-        val guild = GuildImpl.get(guildId) ?: return
+        val guild = Guild.get(guildId) ?: return
         val channelId = data["channel_id"].asLong
         val channel = guild.getTextChannel(channelId) ?: return
         val authorObject = data["author"].asJsonObject
