@@ -6,7 +6,6 @@ import me.syari.discord.rest.RestClient
 import me.syari.discord.websocket.GatewayClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.properties.Delegates
 
 object KtDiscord {
     const val NAME = "KtDiscord"
@@ -14,24 +13,22 @@ object KtDiscord {
     const val GITHUB_URL = "https://github.com/sya-ri/KtDiscord"
     const val API_VERSION = 6
 
-    val LOGGER: Logger = LoggerFactory.getLogger(NAME)
+    internal val LOGGER: Logger = LoggerFactory.getLogger(NAME)
 
     init {
         LOGGER.info("$NAME v$VERSION ($GITHUB_URL)")
     }
 
     internal lateinit var token: String
-        private set
-    var status = ConnectStatus.DISCONNECTED
-        internal set
-    var shard by Delegates.notNull<Int>()
-        private set
-    var maxShards by Delegates.notNull<Int>()
-        private set
+    internal const val shard = 0
+    internal const val maxShards = 1
     internal val gatewayIntents = setOf(GatewayIntent.GUILD_MESSAGES)
     internal lateinit var messageReceiveEvent: (Message) -> Unit
 
-    suspend fun login(token: String, shard: Int = 0, maxShards: Int = 1, messageReceiveEvent: (Message) -> Unit) {
+    var status = ConnectStatus.DISCONNECTED
+        internal set
+
+    suspend fun login(token: String, messageReceiveEvent: (Message) -> Unit) {
         if (status != ConnectStatus.DISCONNECTED) {
             throw IllegalStateException()
         }
@@ -39,8 +36,6 @@ object KtDiscord {
             throw IllegalArgumentException("")
         }
         this.token = token
-        this.shard = shard
-        this.maxShards = maxShards
 
         status = ConnectStatus.CONNECTING
 
