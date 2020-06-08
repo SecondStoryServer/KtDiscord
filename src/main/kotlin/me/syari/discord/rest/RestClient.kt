@@ -24,9 +24,16 @@ import me.syari.discord.exception.DiscordException
 import me.syari.discord.exception.MissingPermissionsException
 import me.syari.discord.exception.NotFoundException
 import me.syari.discord.exception.RateLimitedException
+import okhttp3.Protocol
 
 object RestClient {
     private val HTTP_CLIENT = HttpClient(OkHttp) {
+        engine {
+            config {
+                protocols(listOf(Protocol.HTTP_1_1))
+            }
+        }
+
         expectSuccess = false
     }
     private const val DISCORD_API_URL = "https://discord.com/api/v$API_VERSION"
