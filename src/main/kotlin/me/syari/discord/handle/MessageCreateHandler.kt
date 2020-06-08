@@ -36,8 +36,7 @@ object MessageCreateHandler: GatewayHandler {
         val mentionRoles = getMentionRoles(guild, data)
         val mentionChannels = getMentionChannels(guild, content)
         val mentionEmojis = getMentionEmojis(guild, content)
-        LOGGER.debug(mentionEmojis.toString())
-        val message = Message(channel, member, content, mentionMembers, mentionRoles, mentionChannels)
+        val message = Message(channel, member, content, mentionMembers, mentionRoles, mentionChannels, mentionEmojis)
         KtDiscord.messageReceiveEvent.invoke(message)
     }
 

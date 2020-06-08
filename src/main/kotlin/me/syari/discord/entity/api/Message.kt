@@ -8,9 +8,10 @@ class Message(
     val content: String,
     val mentionMembers: List<Member>,
     val mentionRoles: List<Role>,
-    val mentionChannels: List<TextChannel>
+    val mentionChannels: List<TextChannel>,
+    val mentionEmojis: List<Emoji>
 ) {
-    val contentDisplay = content.replaceAll(mentionMembers + mentionRoles + mentionChannels)
+    val contentDisplay = content.replaceAll(mentionMembers + mentionRoles + mentionChannels + mentionEmojis)
 
     override fun toString(): String {
         return "Message(#${channel.name} ${member.displayName}: ${contentDisplay})"
