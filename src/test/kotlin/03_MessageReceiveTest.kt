@@ -1,4 +1,3 @@
-import me.syari.discord.BOT_TOKEN
 import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.LOGGER
 

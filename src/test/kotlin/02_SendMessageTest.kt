@@ -1,7 +1,5 @@
-import me.syari.discord.BOT_TOKEN
 import me.syari.discord.KtDiscord
 import me.syari.discord.KtDiscord.LOGGER
-import me.syari.discord.TEST_TEXT_CHANNEL
 import me.syari.discord.entity.api.TextChannel
 
 suspend fun main() {
