@@ -5,13 +5,13 @@ import me.syari.discord.entity.api.Guild
 import me.syari.discord.util.json.JsonUtil.getOrNull
 
 object GuildCreateHandler: GatewayHandler {
-    override fun handle(data: JsonObject) {
-        if (data.getOrNull("unavailable")?.asBoolean == true) {
+    override fun handle(json: JsonObject) {
+        if (json.getOrNull("unavailable")?.asBoolean == true) {
             return
         }
 
-        val id = data["id"].asLong
+        val id = json["id"].asLong
 
-        Guild.putOrUpdate(id, data)
+        Guild.putOrUpdate(id, json)
     }
 }

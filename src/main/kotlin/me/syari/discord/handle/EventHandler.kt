@@ -8,11 +8,11 @@ object EventHandler {
         "GUILD_CREATE" to GuildCreateHandler, "MESSAGE_CREATE" to MessageCreateHandler
     )
 
-    fun handleEvent(eventType: String, data: JsonObject) {
+    fun handleEvent(eventType: String, json: JsonObject) {
         try {
-            handlers[eventType]?.handle(data)
+            handlers[eventType]?.handle(json)
         } catch (ex: Exception) {
-            LOGGER.error("Failed to handle the event! (type: $eventType, json: $data)", ex)
+            LOGGER.error("Failed to handle the event! (type: $eventType, json: $json)", ex)
         }
     }
 }

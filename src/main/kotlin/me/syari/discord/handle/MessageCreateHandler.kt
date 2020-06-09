@@ -14,22 +14,22 @@ import me.syari.discord.util.json.JsonUtil.getOrNull
 import java.util.regex.Pattern
 
 object MessageCreateHandler: GatewayHandler {
-    override fun handle(data: JsonObject) {
-        LOGGER.debug("MessageCreateHandler $data")
-        handleGuild(data)
+    override fun handle(json: JsonObject) {
+        LOGGER.debug("MessageCreateHandler $json")
+        handleGuild(json)
     }
 
-    private fun handleGuild(data: JsonObject) {
-        val guildId = data.getOrNull("guild_id")?.asLong ?: return
+    private fun handleGuild(json: JsonObject) {
+        val guildId = json.getOrNull("guild_id")?.asLong ?: return
         val guild = Guild.get(guildId) ?: return
-        val channelId = data["channel_id"].asLong
+        val channelId = json["channel_id"].asLong
         val channel = guild.getTextChannel(channelId) ?: return
-        val userJson = data["author"].asJsonObject
-        val memberJson = data["member"].asJsonObject
+        val userJson = json["author"].asJsonObject
+        val memberJson = json["member"].asJsonObject
         val member = Member.from(memberJson, userJson)
-        val content = data["content"].asString
-        val mentionMembers = getMentionMembers(data)
-        val mentionRoles = getMentionRoles(guild, data)
+        val content = json["content"].asString
+        val mentionMembers = getMentionMembers(json)
+        val mentionRoles = getMentionRoles(guild, json)
         val mentionChannels = getMentionChannels(guild, content)
         val mentionEmojis = getMentionEmojis(guild, content)
         val message = Message(channel, member, content, mentionMembers, mentionRoles, mentionChannels, mentionEmojis)
@@ -39,9 +39,9 @@ object MessageCreateHandler: GatewayHandler {
     private fun getMentionMembers(parent: JsonObject): List<Member> {
         val array = parent.getArrayOrNull("mentions")
         return array?.map {
-            val data = it.asJsonObject
-            val memberJson = data["member"].asJsonObject
-            Member.from(memberJson, data)
+            val child = it.asJsonObject
+            val memberJson = child["member"].asJsonObject
+            Member.from(memberJson, child)
         } ?: emptyList()
     }
 

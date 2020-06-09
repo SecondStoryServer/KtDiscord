@@ -17,8 +17,8 @@ class Guild {
     }
 
     private fun updateEmoji(json: JsonObject) {
-        val emojiObjects = json["emojis"].asJsonArray.map { it.asJsonObject }
-        emojiObjects.forEach {
+        val emojiJsons = json["emojis"].asJsonArray.map { it.asJsonObject }
+        emojiJsons.forEach {
             val emojiName = it["name"].asString
             val emojiId = it["id"].asLong
             val isAnimated = it["animated"].asBoolean
@@ -27,8 +27,8 @@ class Guild {
     }
 
     private fun updateRole(json: JsonObject) {
-        val roleObjects = json["roles"].asJsonArray.map { it.asJsonObject }
-        roleObjects.forEach {
+        val roleJsons = json["roles"].asJsonArray.map { it.asJsonObject }
+        roleJsons.forEach {
             val roleName = it["name"].asString
             val roleId = it["id"].asLong
             roles[roleId] = Role(roleName, roleId)
@@ -36,8 +36,8 @@ class Guild {
     }
 
     private fun updateChannel(json: JsonObject) {
-        val channelObjects = json.getOrNull("channels")?.asJsonArray?.map { it.asJsonObject }
-        channelObjects?.forEach {
+        val channelJsons = json.getOrNull("channels")?.asJsonArray?.map { it.asJsonObject }
+        channelJsons?.forEach {
             when (ChannelType.get(it["type"].asInt)) {
                 ChannelType.GUILD_TEXT -> {
                     val channelId = it["id"].asLong
