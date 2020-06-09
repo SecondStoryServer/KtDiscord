@@ -9,7 +9,6 @@ import me.syari.discord.entity.api.Member
 import me.syari.discord.entity.api.Message
 import me.syari.discord.entity.api.Role
 import me.syari.discord.entity.api.TextChannel
-import me.syari.discord.entity.api.User
 import me.syari.discord.util.json.JsonUtil.getArrayOrNull
 import me.syari.discord.util.json.JsonUtil.getOrNull
 import java.util.regex.Pattern
@@ -25,10 +24,9 @@ object MessageCreateHandler: GatewayHandler {
         val guild = Guild.get(guildId) ?: return
         val channelId = data["channel_id"].asLong
         val channel = guild.getTextChannel(channelId) ?: return
-        val authorObject = data["author"].asJsonObject
-        val author = User.from(authorObject)
-        val memberObject = data["member"].asJsonObject
-        val member = Member.from(memberObject, author)
+        val userJson = data["author"].asJsonObject
+        val memberJson = data["member"].asJsonObject
+        val member = Member.from(memberJson, userJson)
         val content = data["content"].asString
         val mentionMembers = getMentionMembers(data)
         val mentionRoles = getMentionRoles(guild, data)
@@ -42,9 +40,8 @@ object MessageCreateHandler: GatewayHandler {
         val array = parent.getArrayOrNull("mentions")
         return array?.map {
             val data = it.asJsonObject
-            val user = User.from(data)
-            val memberObject = data["member"].asJsonObject
-            Member.from(memberObject, user)
+            val memberJson = data["member"].asJsonObject
+            Member.from(memberJson, data)
         } ?: emptyList()
     }
 

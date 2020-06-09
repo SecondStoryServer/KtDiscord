@@ -16,6 +16,10 @@ data class Member(val name: String, val id: Long, val isBot: Boolean, val nickNa
         get() = "<@!?$id>".toRegex()
 
     companion object {
+        fun from(memberJson: JsonObject, userJson: JsonObject): Member {
+            return from(memberJson, User.from(userJson))
+        }
+
         fun from(json: JsonObject, user: User): Member {
             val name = user.name
             val nickName = json.getOrNull("nick")?.asStringOrNull
