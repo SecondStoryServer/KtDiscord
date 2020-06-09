@@ -1,10 +1,11 @@
 package me.syari.discord.entity.api
 
+import com.google.gson.JsonObject
 import me.syari.discord.entity.Mentionable
+import me.syari.discord.util.json.JsonUtil.asStringOrNull
+import me.syari.discord.util.json.JsonUtil.getOrNull
 
-interface Member: User, Mentionable {
-    val nickName: String?
-
+data class Member(val name: String, val id: Long, val isBot: Boolean, val nickName: String?): Mentionable {
     val displayName
         get() = nickName ?: name
 
@@ -13,4 +14,14 @@ interface Member: User, Mentionable {
 
     override val asMentionRegex: Regex
         get() = "<@!?$id>".toRegex()
+
+    companion object {
+        fun from(json: JsonObject, user: User): Member {
+            val name = user.name
+            val nickName = json.getOrNull("nick")?.asStringOrNull
+            val id = user.id
+            val isBot = user.isBot
+            return Member(name, id, isBot, nickName)
+        }
+    }
 }
