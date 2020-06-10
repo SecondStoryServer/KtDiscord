@@ -1,4 +1,4 @@
-package me.syari.discord
+package me.syari.discord.websocket
 
 enum class GatewayIntent(val flag: Int) {
     /**

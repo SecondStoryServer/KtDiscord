@@ -4,6 +4,7 @@ import me.syari.discord.entity.api.Message
 import me.syari.discord.rest.EndPoint
 import me.syari.discord.rest.RestClient
 import me.syari.discord.websocket.GatewayClient
+import me.syari.discord.websocket.GatewayIntent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
