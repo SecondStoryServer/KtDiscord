@@ -12,7 +12,7 @@ internal enum class GatewayIntent(val flag: Int) {
     - CHANNEL_DELETE
     - CHANNEL_PINS_UPDATE
      */
-    // GUILDS(1 shl 0),
+    GUILDS(1 shl 0),
 
     /**
     - GUILD_MEMBER_ADD

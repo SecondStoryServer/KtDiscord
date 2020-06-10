@@ -23,7 +23,7 @@ object KtDiscord {
     internal lateinit var token: String
     internal const val shard = 0
     internal const val maxShards = 1
-    internal val gatewayIntents = setOf(GatewayIntent.GUILD_MESSAGES)
+    internal val gatewayIntents = setOf(GatewayIntent.GUILDS, GatewayIntent.GUILD_MESSAGES)
     internal lateinit var messageReceiveEvent: (Message) -> Unit
 
     var status = ConnectStatus.DISCONNECTED
