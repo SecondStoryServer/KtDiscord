@@ -2,7 +2,6 @@ package me.syari.discord.handle
 
 import com.google.gson.JsonObject
 import me.syari.discord.KtDiscord
-import me.syari.discord.KtDiscord.LOGGER
 import me.syari.discord.entity.api.Emoji
 import me.syari.discord.entity.api.Guild
 import me.syari.discord.entity.api.Member
@@ -15,7 +14,6 @@ import java.util.regex.Pattern
 
 internal object MessageCreateHandler: GatewayHandler {
     override fun handle(json: JsonObject) {
-        LOGGER.debug("MessageCreateHandler $json")
         handleGuild(json)
     }
 
