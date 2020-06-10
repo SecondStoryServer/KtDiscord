@@ -2,7 +2,7 @@ package me.syari.discord.entity.api
 
 import me.syari.discord.entity.Mentionable
 
-data class Emoji(val name: String, val id: Long, val isAnimated: Boolean): Mentionable {
+internal data class Emoji(val name: String, val id: Long, val isAnimated: Boolean): Mentionable {
     override val asMentionDisplay: String
         get() = ":$name:"
 

@@ -5,7 +5,7 @@ import me.syari.discord.entity.api.TextChannel.Companion.allTextChannels
 import me.syari.discord.entity.enums.ChannelType
 import me.syari.discord.util.json.JsonUtil.getOrNull
 
-class Guild {
+internal class Guild {
     private val emojis = mutableMapOf<Long, Emoji>()
     private val roles = mutableMapOf<Long, Role>()
     private val textChannels = mutableMapOf<Long, TextChannel>()
@@ -65,11 +65,11 @@ class Guild {
     companion object {
         private val serverList = mutableMapOf<Long, Guild>()
 
-        internal fun get(id: Long): Guild? {
+        fun get(id: Long): Guild? {
             return serverList[id]
         }
 
-        internal fun putOrUpdate(id: Long, json: JsonObject) {
+        fun putOrUpdate(id: Long, json: JsonObject) {
             serverList.getOrPut(id) { Guild() }.update(json)
         }
     }

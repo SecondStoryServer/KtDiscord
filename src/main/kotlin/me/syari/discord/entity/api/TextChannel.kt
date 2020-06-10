@@ -8,7 +8,7 @@ import me.syari.discord.util.json.JsonUtil.json
 /**
  * GuildTextChannel
  */
-data class TextChannel(val name: String, val id: Long): Mentionable {
+data class TextChannel internal constructor(val name: String, val id: Long): Mentionable {
     suspend fun send(message: String) {
         RestClient.request(EndPoint.CreateMessage(id), json {
             "content" to message

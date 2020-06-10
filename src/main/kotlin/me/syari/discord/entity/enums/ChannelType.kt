@@ -1,6 +1,6 @@
 package me.syari.discord.entity.enums
 
-enum class ChannelType(private val id: Int) {
+internal enum class ChannelType(private val id: Int) {
     GUILD_TEXT(0);
     // DM(1)
     // GUILD_VOICE(2)
