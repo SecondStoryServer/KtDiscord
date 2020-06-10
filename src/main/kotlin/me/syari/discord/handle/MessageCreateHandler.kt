@@ -13,7 +13,7 @@ import me.syari.discord.util.json.JsonUtil.getArrayOrNull
 import me.syari.discord.util.json.JsonUtil.getOrNull
 import java.util.regex.Pattern
 
-object MessageCreateHandler: GatewayHandler {
+internal object MessageCreateHandler: GatewayHandler {
     override fun handle(json: JsonObject) {
         LOGGER.debug("MessageCreateHandler $json")
         handleGuild(json)

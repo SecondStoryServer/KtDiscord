@@ -1,6 +1,6 @@
 package me.syari.discord.util
 
-object ByteArrayUtil {
+internal object ByteArrayUtil {
     fun ByteArray.takeLastAsByteArray(n: Int): ByteArray {
         return ByteArray(n).also { result ->
             for (i in 0 until n) {

@@ -26,7 +26,7 @@ import me.syari.discord.exception.NotFoundException
 import me.syari.discord.exception.RateLimitedException
 import okhttp3.Protocol
 
-object RestClient {
+internal object RestClient {
     private val HTTP_CLIENT = HttpClient(OkHttp) {
         engine {
             config {

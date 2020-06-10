@@ -3,7 +3,7 @@ package me.syari.discord.handle
 import com.google.gson.JsonObject
 import me.syari.discord.KtDiscord.LOGGER
 
-object EventHandler {
+internal object EventHandler {
     private val handlers = mapOf(
         "GUILD_CREATE" to GuildCreateHandler, "MESSAGE_CREATE" to MessageCreateHandler
     )

@@ -6,7 +6,7 @@ import kotlinx.coroutines.sync.withLock
 import me.syari.discord.KtDiscord.LOGGER
 import java.util.concurrent.ConcurrentHashMap
 
-object RateLimiter {
+internal object RateLimiter {
     @Volatile
     private var globalRateLimitEnds: Long = 0L
 

@@ -10,14 +10,12 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.system.measureTimeMillis
 
-object Timer {
+internal object Timer {
     /**
      * Creates a timer that executes the specified [action] periodically.
      */
     fun CoroutineScope.timer(
-        interval: Long,
-        context: CoroutineContext = EmptyCoroutineContext,
-        action: suspend () -> Unit
+        interval: Long, context: CoroutineContext = EmptyCoroutineContext, action: suspend () -> Unit
     ): Job {
         return launch(context) {
 

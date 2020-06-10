@@ -40,7 +40,7 @@ import java.io.IOException
 import java.util.zip.Inflater
 import java.util.zip.InflaterOutputStream
 
-object GatewayClient {
+internal object GatewayClient {
     private val GSON = Gson()
 
     private lateinit var websocket: WebSocket
