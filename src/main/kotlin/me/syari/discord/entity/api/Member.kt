@@ -22,14 +22,11 @@ data class Member internal constructor(
 
     internal companion object {
         fun from(memberJson: JsonObject, userJson: JsonObject): Member {
-            return from(memberJson, User.from(userJson))
-        }
-
-        fun from(json: JsonObject, user: User): Member {
+            val user = User.from(userJson)
             val name = user.name
-            val nickName = json.getOrNull("nick")?.asStringOrNull
             val id = user.id
             val isBot = user.isBot
+            val nickName = memberJson.getOrNull("nick")?.asStringOrNull
             return Member(name, id, isBot, nickName)
         }
     }
