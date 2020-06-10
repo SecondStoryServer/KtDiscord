@@ -25,9 +25,7 @@ object KtDiscord {
     internal const val maxShards = 1
     internal val gatewayIntents = setOf(GatewayIntent.GUILDS, GatewayIntent.GUILD_MESSAGES)
     internal lateinit var messageReceiveEvent: (Message) -> Unit
-
-    var status = ConnectStatus.DISCONNECTED
-        internal set
+    internal var status = ConnectStatus.DISCONNECTED
 
     suspend fun login(token: String, messageReceiveEvent: (Message) -> Unit) {
         if (status != ConnectStatus.DISCONNECTED) {
