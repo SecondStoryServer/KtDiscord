@@ -16,7 +16,6 @@ object Timer {
      */
     fun CoroutineScope.timer(
         interval: Long,
-        fixedRate: Boolean = true,
         context: CoroutineContext = EmptyCoroutineContext,
         action: suspend () -> Unit
     ): Job {
@@ -31,11 +30,7 @@ object Timer {
                     }
                 }
 
-                if (fixedRate) {
-                    delay(0L.coerceAtLeast(interval - time))
-                } else {
-                    delay(interval)
-                }
+                delay(0L.coerceAtLeast(interval - time))
             }
         }
     }
