@@ -1,5 +1,7 @@
 package me.syari.discord.entity.api
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import me.syari.discord.entity.Mentionable
 import me.syari.discord.rest.EndPoint
 import me.syari.discord.rest.RestClient
@@ -9,10 +11,12 @@ import me.syari.discord.util.json.JsonUtil.json
  * GuildTextChannel
  */
 data class TextChannel internal constructor(val name: String, val id: Long): Mentionable {
-    suspend fun send(message: String) {
-        RestClient.request(EndPoint.CreateMessage(id), json {
-            "content" to message
-        })
+    fun send(message: String) {
+        GlobalScope.launch {
+            RestClient.request(EndPoint.CreateMessage(id), json {
+                "content" to message
+            })
+        }
     }
 
     override val asMentionDisplay: String
