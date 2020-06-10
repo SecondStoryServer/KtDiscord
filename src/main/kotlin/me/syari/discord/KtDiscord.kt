@@ -1,5 +1,7 @@
 package me.syari.discord
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import me.syari.discord.entity.api.Message
 import me.syari.discord.rest.EndPoint
 import me.syari.discord.rest.RestClient
@@ -44,5 +46,11 @@ object KtDiscord {
         status = ConnectStatus.CONNECTED
 
         this.messageReceiveEvent = messageReceiveEvent
+    }
+
+    fun loginAsync(token: String, messageReceiveEvent: (Message) -> Unit) {
+        GlobalScope.launch {
+            login(token, messageReceiveEvent)
+        }
     }
 }
