@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
 
 object KtDiscord {
     const val NAME = "KtDiscord"
-    const val VERSION = "1.0-dev"
+    const val VERSION = "1.0"
     const val GITHUB_URL = "https://github.com/sya-ri/KtDiscord"
     const val API_VERSION = 6
 
