@@ -1,10 +1,10 @@
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
     `maven-publish`
 }
 
 group = "me.syari.discord"
-version = "1.0"
+version = "1.0.1"
 
 val mavenRepoUploadURL: String by extra
 val mavenRepoUploadUser: String by extra
@@ -17,8 +17,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.google.code.gson:gson:2.8.0")
-    implementation("io.ktor:ktor-client-okhttp:1.3.2")
+    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("io.ktor:ktor-client-okhttp:1.4.0")
     testImplementation("org.slf4j:slf4j-simple:1.7.30")
 }
 

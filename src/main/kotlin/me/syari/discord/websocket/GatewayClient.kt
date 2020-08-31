@@ -3,14 +3,8 @@ package me.syari.discord.websocket
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.util.hex
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import io.ktor.util.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.syari.discord.ConnectStatus
@@ -29,11 +23,7 @@ import me.syari.discord.util.json.JsonUtil.getObjectOrNull
 import me.syari.discord.util.json.JsonUtil.getOrNull
 import me.syari.discord.util.json.JsonUtil.json
 import me.syari.discord.util.json.JsonUtil.jsonArray
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
+import okhttp3.*
 import okio.ByteString
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -268,7 +258,7 @@ internal object GatewayClient {
         }
 
         override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: Response?) {
-            LOGGER.error("WebSocket Failure ResponseCode: ${response?.code()}", throwable)
+            LOGGER.error("WebSocket Failure ResponseCode: ${response?.code}", throwable)
         }
     }
 }
